@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capminds Appointment Scheduling</title>
+    
+    <!-- Link to external CSS and Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <div id="app">
+        
+        <!-- Top header area -->
+        <header class="top-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                <span class="logo-text">CAPMINDS</span>
+            </div>
+            <button id="headerBookBtn" class="btn-primary">
+                + Book Appointment
+            </button>
+        </header>
+
+        <div class="main-container">
+            
+            <!-- Left Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <button id="toggleSidebar" class="sidebar-btn">
+                    <i class="fa-solid fa-angles-right"></i>
+                </button>
+                
+                <nav>
+                    <button class="nav-btn" data-target="calendarView" title="Calendar">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span class="nav-text">Calendar</span>
+                    </button>
+                    
+                    <button class="nav-btn active" data-target="dashboardView" title="Dashboard">
+                        <i class="fa-solid fa-border-all"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Main Content Box -->
+            <main class="content-area">
+                
+                <!-- Dashboard Section -->
+                <section id="dashboardView" class="view-section active">
+                    <div class="card">
+                        <h2 class="view-title">Practice Dashboard</h2>
+                        
+                        <!-- Top Filters -->
+                        <div class="filter-bar">
+                            <div class="filter-group">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="searchPatient" placeholder="Patient Search">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="searchDoctor" placeholder="Doctor Search">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <i class="fa-regular fa-calendar"></i>
+                                <input type="date" id="filterStartDate" title="Start Date">
+                            </div>
+                            
+                            <span class="filter-separator">-</span>
+                            
+                            <div class="filter-group">
+                                <i class="fa-regular fa-calendar"></i>
+                                <input type="date" id="filterEndDate" title="End Date">
+                            </div>
+                            
+                            <button id="btnUpdateFilter" class="btn-primary" style="padding: 8px 16px;">Update</button>
+                        </div>
+
+                        <!-- Data Table -->
+                        <div class="table-container">
+                            <h3>Appointment Details</h3>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Hospital</th>
+                                        <th>Specialty</th>
+                                        <th>Select Date</th>
+                                        <th>Select Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointmentTableBody">
+                                    <!-- rows are added using javascript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Calendar Section -->
+                <section id="calendarView" class="view-section" style="display: none;">
+                    <div class="card calendar-card">
+                        
+                        <div class="calendar-header">
+                            <div></div>
+                            <div class="calendar-controls">
+                                <button id="calPrevBtn" class="btn-icon"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="cal-current-date">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span id="calCurrentMonthYear"></span>
+                                </div>
+                                <button id="calNextBtn" class="btn-icon"><i class="fa-solid fa-chevron-right"></i></button>
+                                <button id="calTodayBtn" class="btn-outline" style="padding: 4px 8px;">Today</button>
+                                <select class="cal-view-select">
+                                    <option value="month">Month</option>
+                                    <option value="year">Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cal-doctor-selector">
+                            <select id="calDoctorFilter" class="cal-doctor-select">
+                                <option value="">All Doctors</option>
+                                <option value="James Marry">James Marry</option>
+                                <option value="Sarah Connor">Sarah Connor</option>
+                                <option value="Albert Wesker">Albert Wesker</option>
+                            </select>
+                        </div>
+
+                        <div class="calendar-grid">
+                            <div class="cal-days-header">
+                                <div>SUNDAY</div>
+                                <div>MONDAY</div>
+                                <div>TUESDAY</div>
+                                <div>WEDNESDAY</div>
+                                <div>THURSDAY</div>
+                                <div>FRIDAY</div>
+                                <div>SATURDAY</div>
+                            </div>
+                            
+                            <div class="cal-days-grid" id="calendarGridBody">
+                                <!-- Calendar days load here from javascript -->
+                            </div>
+                        </div>
+                        
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- Pop up Modal for Add/Edit -->
+        <div id="appointmentModal" class="modal">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h2>Schedule Appointment</h2>
+                    <button id="closeModalBtn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="appointmentForm">
+                        <input type="hidden" id="editAppointmentId">
+
+                        <div class="form-grid">
+                            
+                            <!-- patient and doctor inputs -->
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-solid fa-user-group field-icon"></i>
+                                    <select id="fieldPatient" required>
+                                        <option value="" disabled selected hidden>Patient Name</option>
+                                        <option value="Henry James">Henry James</option>
+                                        <option value="John Doe">John Doe</option>
+                                        <option value="Jane Smith">Jane Smith</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down arr-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-solid fa-user-doctor field-icon"></i>
+                                    <select id="fieldDoctor" required>
+                                        <option value="" disabled selected hidden>Doctor Name</option>
+                                        <option value="James Marry">James Marry</option>
+                                        <option value="Sarah Connor">Sarah Connor</option>
+                                        <option value="Albert Wesker">Albert Wesker</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down arr-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- hospital and specialty inputs -->
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-solid fa-location-dot field-icon"></i>
+                                    <select id="fieldHospital" required>
+                                        <option value="" disabled selected hidden>Hospital Name</option>
+                                        <option value="Salus Center (General Hospital)">Salus Center (General Hospital)</option>
+                                        <option value="Ultracare (General Hospital)">Ultracare (General Hospital)</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down arr-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-solid fa-user-tie field-icon"></i>
+                                    <select id="fieldSpecialty" required>
+                                        <option value="" disabled selected hidden>Specialty</option>
+                                        <option value="Dermatology">Dermatology</option>
+                                        <option value="Cardiology">Cardiology</option>
+                                        <option value="Neurology">Neurology</option>
+                                        <option value="General">General</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down arr-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- date and time inputs -->
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-regular fa-calendar field-icon"></i>
+                                    <input type="text"
+                                        onfocus="(this.type='date')"
+                                        onblur="if(!this.value)this.type='text'"
+                                        id="fieldDate"
+                                        placeholder="Select Date"
+                                        required>
+                                </div>
+                            </div>
+                            
+                            <div class="field-wrap">
+                                <div class="field-inner">
+                                    <i class="fa-regular fa-clock field-icon"></i>
+                                    <input type="text"
+                                        onfocus="(this.type='time')"
+                                        onblur="if(!this.value)this.type='text'"
+                                        id="fieldTime"
+                                        placeholder="Select Time"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- reason textarea -->
+                            <div class="field-wrap full-col">
+                                <label class="field-label" for="fieldReason">Reason</label>
+                                <input type="text" id="fieldReason" class="reason-input" placeholder="">
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" id="cancelModalBtn" class="mf-cancel">Cancel</button>
+                            <button type="submit" id="saveModalBtn" class="mf-save">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

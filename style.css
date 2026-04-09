@@ -428,6 +428,14 @@ button {
     border-right: 1px solid #ddd;
 }
 
+.short-day {
+    display: none;
+}
+
+.long-day {
+    display: inline;
+}
+
 .cal-days-header div:last-child {
     border-right: none;
 }
@@ -799,6 +807,14 @@ button {
         font-size: 10px;
         padding: 8px 2px;
         word-break: break-all;
+    }
+
+    .short-day {
+        display: inline;
+    }
+
+    .long-day {
+        display: none;
     }
 
     .cal-days-grid {

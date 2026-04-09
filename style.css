@@ -200,6 +200,14 @@ button {
     margin-right: 8px;
 }
 
+.sidebar.expanded .sidebar-btn i {
+    transform: rotate(180deg);
+}
+
+.sidebar-btn i {
+    transition: transform 0.3s ease;
+}
+
 .sidebar.expanded .nav-btn {
     width: 90%;
     justify-content: flex-start;
